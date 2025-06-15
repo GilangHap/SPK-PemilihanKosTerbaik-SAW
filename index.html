@@ -10,21 +10,290 @@
     <script src="https://cdn.jsdelivr.net/npm/heroicons@2.0.16/outline/index.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
     <style>
         [x-cloak] { display: none !important; }
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .comparison-table {
+        width: 100%;
+        max-width: 100%;
+        table-layout: fixed;
+        }
+
+        /* If they are card elements */
+        .criteria-comparison {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: space-between;
+        }
+
+        .criteria-item {
+        flex: 1 1 300px;
+        max-width: 100%;
+        overflow: hidden;
+        }
+
+        /* For any oversized elements */
+        .criteria-content {
+        overflow: auto;
+        max-height: 500px; /* Adjust as needed */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+        .criteria-item {
+            flex: 1 1 100%;
+        }
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .tab-active {
+            position: relative;
+        }
+        .tab-active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 3px 3px 0 0;
+        }
+        .rating-container {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+        .rating-container input {
+            display: none;
+        }
+        .rating-container label {
+            cursor: pointer;
+            width: 25px;
+            height: 25px;
+            background: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+            margin: 0 3px;
+            transition: all 0.2s ease;
+        }
+        .rating-container label:hover,
+        .rating-container label:hover ~ label,
+        .rating-container input:checked ~ label {
+            background: #667eea;
+            color: white;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .hover-card {
+            transition: all 0.3s ease;
+        }
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .backdrop {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.08'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+                .export-btn {
+            position: relative;
+            overflow: hidden;
+            transform: translateY(0);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .export-btn:active {
+            transform: translateY(0);
+        }
+        
+        .export-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .export-btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .export-btn:hover .btn-icon {
+            transform: scale(1.1);
+        }
+        
+        .pdf-gradient {
+            background: linear-gradient(135deg, #f43f5e, #ec4899);
+        }
+        
+        .excel-gradient {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .load-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .load-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .load-gradient:hover::before {
+            left: 100%;
+        }
+        
+        .clear-gradient {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .clear-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .clear-gradient:hover::before {
+            left: 100%;
+        }
+        
+        .btn-enhanced {
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateZ(0);
+        }
+        
+        .btn-enhanced:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .btn-enhanced:active {
+            transform: translateY(0);
+        }
+        
+        .btn-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .btn-enhanced:hover .btn-icon {
+            transform: scale(1.1);
+        }
+        
+        .ripple {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ripple::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .ripple:active::after {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .glow-effect {
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .glow-effect-red {
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+        }
+        
+        .load-gradient:hover {
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+        }
+        
+        .clear-gradient:hover {
+            box-shadow: 0 0 30px rgba(255, 107, 107, 0.5);
+        }
+
     </style>
 </head>
-<body class="bg-blue-50" x-data="spkApp()">
+<body class="backdrop bg-gray-50" x-data="spkApp()">
     <!-- Header -->
-    <header class="bg-blue-800 text-white shadow-lg">
+    <header class="gradient-bg text-white shadow-xl">
         <div class="container mx-auto p-4 md:p-6">
             <div class="flex flex-col md:flex-row justify-between items-center">
-                <div>
+                <div class="animate__animated animate__fadeInLeft">
                     <h1 class="text-2xl md:text-3xl font-bold">Sistem Pendukung Keputusan</h1>
-                    <p class="text-blue-200">Pemilihan Kos Terbaik di Sekitar Kampus</p>
+                    <p class="text-indigo-100">Pemilihan Kos Terbaik di Sekitar Kampus</p>
                 </div>
-                <div class="mt-3 md:mt-0">
-                    <span class="bg-blue-700 px-3 py-1 rounded-full text-sm">Metode SAW</span>
+                <div class="mt-3 md:mt-0 animate__animated animate__fadeInRight">
+                    <span class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium shadow-md">
+                        <i class="fas fa-chart-line mr-1"></i> Metode SAW
+                    </span>
                 </div>
             </div>
         </div>
@@ -33,165 +302,198 @@
     <!-- Main Content -->
     <main class="container mx-auto p-4 md:p-6">
         <!-- Navigation Tabs -->
-        <div class="flex flex-wrap border-b border-gray-200 mb-6">
-            <button @click="activeTab = 'input'" :class="{'border-b-2 border-blue-500 text-blue-600': activeTab === 'input', 'text-gray-500': activeTab !== 'input'}" class="px-4 py-2 font-medium">
-                Input Data
+        <div class="flex flex-wrap mb-6 bg-white rounded-full shadow-md p-1 overflow-x-auto">
+            <button @click="activeTab = 'input'" :class="{'tab-active text-indigo-600 font-semibold': activeTab === 'input', 'text-gray-600': activeTab !== 'input'}" 
+                class="px-5 py-2 rounded-full transition duration-200 ease-in-out hover:bg-indigo-50">
+                <i class="fas fa-keyboard mr-1"></i> Input Data
             </button>
-            <button @click="activeTab = 'calculation'" :class="{'border-b-2 border-blue-500 text-blue-600': activeTab === 'calculation', 'text-gray-500': activeTab !== 'calculation'}" class="px-4 py-2 font-medium">
-                Proses Perhitungan
+            <button @click="activeTab = 'calculation'" :class="{'tab-active text-indigo-600 font-semibold': activeTab === 'calculation', 'text-gray-600': activeTab !== 'calculation'}" 
+                class="px-5 py-2 rounded-full transition duration-200 ease-in-out hover:bg-indigo-50">
+                <i class="fas fa-calculator mr-1"></i> Proses Perhitungan
             </button>
-            <button @click="activeTab = 'result'" :class="{'border-b-2 border-blue-500 text-blue-600': activeTab === 'result', 'text-gray-500': activeTab !== 'result'}" class="px-4 py-2 font-medium">
-                Hasil Rekomendasi
+            <button @click="activeTab = 'result'" :class="{'tab-active text-indigo-600 font-semibold': activeTab === 'result', 'text-gray-600': activeTab !== 'result'}" 
+                class="px-5 py-2 rounded-full transition duration-200 ease-in-out hover:bg-indigo-50">
+                <i class="fas fa-trophy mr-1"></i> Hasil Rekomendasi
             </button>
-            <button @click="activeTab = 'about'" :class="{'border-b-2 border-blue-500 text-blue-600': activeTab === 'about', 'text-gray-500': activeTab !== 'about'}" class="px-4 py-2 font-medium">
-                Tentang Metode
+            <button @click="activeTab = 'about'" :class="{'tab-active text-indigo-600 font-semibold': activeTab === 'about', 'text-gray-600': activeTab !== 'about'}" 
+                class="px-5 py-2 rounded-full transition duration-200 ease-in-out hover:bg-indigo-50">
+                <i class="fas fa-info-circle mr-1"></i> Tentang Metode
             </button>
         </div>
 
         <!-- Input Tab -->
-        <div x-show="activeTab === 'input'" x-cloak>
+        <div x-show="activeTab === 'input'" x-cloak class="animate__animated animate__fadeIn">
             <div class="flex flex-col md:flex-row gap-6">
                 <!-- Input Form -->
-                <div class="w-full md:w-1/2 bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-xl font-semibold mb-4">Tambah Data Kos</h2>
-                    <form @submit.prevent="addBoardingHouse">
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+                <div class="w-full md:w-1/2 glass-card p-6">
+                    <h2 class="text-xl font-bold mb-5 text-gray-800 flex items-center">
+                        <i class="fas fa-home text-indigo-600 mr-2"></i> Tambah Data Kos
+                    </h2>
+                    <form @submit.prevent="addBoardingHouse" class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2" for="name">
                                 Nama Kos
                             </label>
-                            <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-                                   id="name" type="text" x-model="newBoardingHouse.name" required>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-building text-gray-400"></i>
+                                </div>
+                                <input class="border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 pr-3 py-2 rounded-lg transition duration-200 ease-in-out" 
+                                    id="name" type="text" x-model="newBoardingHouse.name" required placeholder="Masukkan nama kos">
+                            </div>
                         </div>
 
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">
-                                Fasilitas (C1) - Bobot: 5
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">
+                                <div class="flex items-center justify-between">
+                                    <span>Fasilitas (C1)</span>
+                                    <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded-full">Bobot: 5</span>
+                                </div>
                             </label>
-                            <div class="flex items-center">
+                            <div class="rating-container mb-1">
                                 <template x-for="i in 5">
-                                    <div class="mr-4">
-                                        <input type="radio" :id="'c1_'+i" name="c1" :value="i" x-model="newBoardingHouse.criteria.c1" class="mr-1" required>
-                                        <label :for="'c1_'+i" x-text="i"></label>
+                                    <div>
+                                        <input type="radio" :id="'c1_'+i" name="c1" :value="i" x-model="newBoardingHouse.criteria.c1" required>
+                                        <label :for="'c1_'+i" class="flex items-center justify-center font-medium" x-text="i"></label>
                                     </div>
                                 </template>
                             </div>
                         </div>
 
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">
-                                Harga Sewa (C2) - Bobot: 4
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">
+                                <div class="flex items-center justify-between">
+                                    <span>Harga Sewa (C2)</span>
+                                    <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded-full">Bobot: 4</span>
+                                </div>
                             </label>
-                            <div class="flex items-center">
+                            <div class="rating-container mb-1">
                                 <template x-for="i in 5">
-                                    <div class="mr-4">
-                                        <input type="radio" :id="'c2_'+i" name="c2" :value="i" x-model="newBoardingHouse.criteria.c2" class="mr-1" required>
-                                        <label :for="'c2_'+i" x-text="i"></label>
+                                    <div>
+                                        <input type="radio" :id="'c2_'+i" name="c2" :value="i" x-model="newBoardingHouse.criteria.c2" required>
+                                        <label :for="'c2_'+i" class="flex items-center justify-center font-medium" x-text="i"></label>
                                     </div>
                                 </template>
                             </div>
                         </div>
 
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">
-                                Keamanan (C3) - Bobot: 3
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">
+                                <div class="flex items-center justify-between">
+                                    <span>Keamanan (C3)</span>
+                                    <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded-full">Bobot: 3</span>
+                                </div>
                             </label>
-                            <div class="flex items-center">
+                            <div class="rating-container mb-1">
                                 <template x-for="i in 5">
-                                    <div class="mr-4">
-                                        <input type="radio" :id="'c3_'+i" name="c3" :value="i" x-model="newBoardingHouse.criteria.c3" class="mr-1" required>
-                                        <label :for="'c3_'+i" x-text="i"></label>
+                                    <div>
+                                        <input type="radio" :id="'c3_'+i" name="c3" :value="i" x-model="newBoardingHouse.criteria.c3" required>
+                                        <label :for="'c3_'+i" class="flex items-center justify-center font-medium" x-text="i"></label>
                                     </div>
                                 </template>
                             </div>
                         </div>
 
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">
-                                Kebersihan (C4) - Bobot: 2
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">
+                                <div class="flex items-center justify-between">
+                                    <span>Kebersihan (C4)</span>
+                                    <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded-full">Bobot: 2</span>
+                                </div>
                             </label>
-                            <div class="flex items-center">
+                            <div class="rating-container mb-1">
                                 <template x-for="i in 5">
-                                    <div class="mr-4">
-                                        <input type="radio" :id="'c4_'+i" name="c4" :value="i" x-model="newBoardingHouse.criteria.c4" class="mr-1" required>
-                                        <label :for="'c4_'+i" x-text="i"></label>
+                                    <div>
+                                        <input type="radio" :id="'c4_'+i" name="c4" :value="i" x-model="newBoardingHouse.criteria.c4" required>
+                                        <label :for="'c4_'+i" class="flex items-center justify-center font-medium" x-text="i"></label>
                                     </div>
                                 </template>
                             </div>
                         </div>
 
-                        <div class="mb-6">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">
-                                Jarak ke Kampus (C5) - Bobot: 1
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">
+                                <div class="flex items-center justify-between">
+                                    <span>Jarak ke Kampus (C5)</span>
+                                    <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded-full">Bobot: 1</span>
+                                </div>
                             </label>
-                            <div class="flex items-center">
+                            <div class="rating-container mb-1">
                                 <template x-for="i in 5">
-                                    <div class="mr-4">
-                                        <input type="radio" :id="'c5_'+i" name="c5" :value="i" x-model="newBoardingHouse.criteria.c5" class="mr-1" required>
-                                        <label :for="'c5_'+i" x-text="i"></label>
+                                    <div>
+                                        <input type="radio" :id="'c5_'+i" name="c5" :value="i" x-model="newBoardingHouse.criteria.c5" required>
+                                        <label :for="'c5_'+i" class="flex items-center justify-center font-medium" x-text="i"></label>
                                     </div>
                                 </template>
                             </div>
                         </div>
 
-                        <div class="flex items-center justify-between">
-                            <button class="bg-blue-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+                        <div class="flex items-center justify-between pt-2">
+                            <button class="btn-primary text-white font-medium py-2 px-5 rounded-full focus:outline-none focus:shadow-outline shadow-lg" 
                                    type="submit">
-                                Tambah Data
+                                <i class="fas fa-plus mr-1"></i> Tambah Data
                             </button>
-                            <button class="bg-gray-500 hover:bg-gray-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+                            <button class="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-5 rounded-full focus:outline-none focus:shadow-outline transition duration-200" 
                                    type="reset" @click="resetForm">
-                                Reset
+                                <i class="fas fa-redo mr-1"></i> Reset
                             </button>
                         </div>
                     </form>
                 </div>
 
                 <!-- Data Table -->
-                <div class="w-full md:w-1/2 bg-white rounded-lg shadow-md p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-semibold">Data Kos</h2>
-                        <div>
-                            <button @click="loadDefaultData" class="bg-green-600 hover:bg-green-500 text-white py-1 px-3 rounded text-sm">
-                                Load Default Data
+                <div class="w-full md:w-1/2 glass-card p-6">
+                    <div class="flex justify-between items-center mb-5">
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                            <i class="fas fa-table text-indigo-600 mr-2"></i> Data Kos
+                        </h2>
+                        <div class="flex flex-wrap gap-4">
+                            <button @click="loadDefaultData" class="btn-enhanced backdrop-blur-md load-gradient text-white py-3 px-6 rounded-xl text-sm font-semibold shadow-lg border border-white/20 flex items-center gap-2 ripple">
+                                <i class="fas fa-database btn-icon"></i> 
+                                <span>Load Default</span>
                             </button>
-                            <button @click="boardingHouses = []" class="bg-red-600 hover:bg-red-500 text-white py-1 px-3 rounded text-sm ml-2">
-                                Clear All
+                            <button @click="boardingHouses = []" class="btn-enhanced backdrop-blur-md clear-gradient text-white py-3 px-6 rounded-xl text-sm font-semibold shadow-lg border border-white/20 flex items-center gap-2 ripple">
+                                <i class="fas fa-trash btn-icon"></i> 
+                                <span>Clear All</span>
                             </button>
                         </div>
                     </div>
                     
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full bg-white">
+                    <div class="overflow-x-auto rounded-lg shadow">
+                        <table class="min-w-full bg-white rounded-lg overflow-hidden">
                             <thead>
-                                <tr>
-                                    <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">Nama</th>
-                                    <th class="py-2 px-2 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C1</th>
-                                    <th class="py-2 px-2 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C2</th>
-                                    <th class="py-2 px-2 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C3</th>
-                                    <th class="py-2 px-2 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C4</th>
-                                    <th class="py-2 px-2 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C5</th>
-                                    <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">Action</th>
+                                <tr class="gradient-bg text-white">
+                                    <th class="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider">Nama</th>
+                                    <th class="py-3 px-2 text-center text-xs font-semibold uppercase tracking-wider">C1</th>
+                                    <th class="py-3 px-2 text-center text-xs font-semibold uppercase tracking-wider">C2</th>
+                                    <th class="py-3 px-2 text-center text-xs font-semibold uppercase tracking-wider">C3</th>
+                                    <th class="py-3 px-2 text-center text-xs font-semibold uppercase tracking-wider">C4</th>
+                                    <th class="py-3 px-2 text-center text-xs font-semibold uppercase tracking-wider">C5</th>
+                                    <th class="py-3 px-4 text-center text-xs font-semibold uppercase tracking-wider">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <template x-if="boardingHouses.length === 0">
                                     <tr>
-                                        <td colspan="7" class="py-4 px-6 border-b border-gray-200 text-center text-gray-500">
-                                            Belum ada data. Silakan input data atau load default data.
+                                        <td colspan="7" class="py-8 px-6 text-center text-gray-500">
+                                            <div class="flex flex-col items-center">
+                                                <i class="fas fa-database text-3xl text-gray-300 mb-2"></i>
+                                                <p>Belum ada data. Silakan input data atau load default data.</p>
+                                            </div>
                                         </td>
                                     </tr>
                                 </template>
                                 <template x-for="(house, index) in boardingHouses" :key="index">
-                                    <tr>
-                                        <td class="py-2 px-4 border-b border-gray-200" x-text="house.name"></td>
-                                        <td class="py-2 px-2 border-b border-gray-200 text-center" x-text="house.criteria.c1"></td>
-                                        <td class="py-2 px-2 border-b border-gray-200 text-center" x-text="house.criteria.c2"></td>
-                                        <td class="py-2 px-2 border-b border-gray-200 text-center" x-text="house.criteria.c3"></td>
-                                        <td class="py-2 px-2 border-b border-gray-200 text-center" x-text="house.criteria.c4"></td>
-                                        <td class="py-2 px-2 border-b border-gray-200 text-center" x-text="house.criteria.c5"></td>
-                                        <td class="py-2 px-4 border-b border-gray-200 text-center">
-                                            <button @click="deleteBoardingHouse(index)" class="text-red-600 hover:text-red-800">
-                                                Hapus
+                                    <tr class="hover:bg-gray-50 transition duration-150">
+                                        <td class="py-3 px-4 border-b" x-text="house.name"></td>
+                                        <td class="py-3 px-2 border-b text-center" x-text="house.criteria.c1"></td>
+                                        <td class="py-3 px-2 border-b text-center" x-text="house.criteria.c2"></td>
+                                        <td class="py-3 px-2 border-b text-center" x-text="house.criteria.c3"></td>
+                                        <td class="py-3 px-2 border-b text-center" x-text="house.criteria.c4"></td>
+                                        <td class="py-3 px-2 border-b text-center" x-text="house.criteria.c5"></td>
+                                        <td class="py-3 px-4 border-b text-center">
+                                            <button @click="deleteBoardingHouse(index)" class="text-rose-500 hover:text-rose-700 transition duration-150">
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
@@ -200,12 +502,12 @@
                         </table>
                     </div>
                     
-                    <div class="mt-4 text-right">
+                    <div class="mt-5 text-right">
                         <button @click="if(boardingHouses.length > 0) { calculateSAW(); activeTab = 'calculation'; }" 
-                                class="bg-blue-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                class="btn-primary text-white font-medium py-2 px-5 rounded-full focus:outline-none focus:shadow-outline shadow-lg flex items-center ml-auto"
                                 :disabled="boardingHouses.length === 0"
                                 :class="{'opacity-50 cursor-not-allowed': boardingHouses.length === 0}">
-                            Proses Perhitungan
+                            <i class="fas fa-calculator mr-2"></i> Proses Perhitungan
                         </button>
                     </div>
                 </div>
@@ -213,30 +515,42 @@
         </div>
 
         <!-- Calculation Tab -->
-        <div x-show="activeTab === 'calculation'" x-cloak>
-            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                <h2 class="text-xl font-semibold mb-4">Matriks Keputusan</h2>
+        <div x-show="activeTab === 'calculation'" x-cloak class="animate__animated animate__fadeIn">
+            <div class="glass-card p-6 mb-6">
+                <h2 class="text-xl font-bold mb-5 text-gray-800 flex items-center">
+                    <i class="fas fa-table text-indigo-600 mr-2"></i> Matriks Keputusan
+                </h2>
                 <div class="overflow-x-auto">
-                    <table class="min-w-full bg-white mb-4">
+                    <table class="min-w-full bg-white mb-4 rounded-lg overflow-hidden shadow">
                         <thead>
-                            <tr>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">Alternatif</th>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C1 (Benefit)</th>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C2 (COST)</th>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C3 (Benefit)</th>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C4 (COST)</th>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C5 (Benefit)</th>
+                            <tr class="gradient-bg text-white">
+                                <th class="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider">Alternatif</th>
+                                <th class="py-3 px-4 text-center text-xs font-semibold uppercase tracking-wider">
+                                    C1 <span class="ml-1 px-1.5 py-0.5 bg-green-400 bg-opacity-30 text-white rounded-md">Benefit</span>
+                                </th>
+                                <th class="py-3 px-4 text-center text-xs font-semibold uppercase tracking-wider">
+                                    C2 <span class="ml-1 px-1.5 py-0.5 bg-red-400 bg-opacity-30 text-white rounded-md">Cost</span>
+                                </th>
+                                <th class="py-3 px-4 text-center text-xs font-semibold uppercase tracking-wider">
+                                    C3 <span class="ml-1 px-1.5 py-0.5 bg-green-400 bg-opacity-30 text-white rounded-md">Benefit</span>
+                                </th>
+                                <th class="py-3 px-4 text-center text-xs font-semibold uppercase tracking-wider">
+                                    C4 <span class="ml-1 px-1.5 py-0.5 bg-green-400 bg-opacity-30 text-white rounded-md">Benefit</span>
+                                </th>
+                                <th class="py-3 px-4 text-center text-xs font-semibold uppercase tracking-wider">
+                                    C5 <span class="ml-1 px-1.5 py-0.5 bg-red-400 bg-opacity-30 text-white rounded-md">Cost</span>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             <template x-for="(house, index) in boardingHouses" :key="index">
-                                <tr>
-                                    <td class="py-2 px-4 border-b border-gray-200" x-text="house.name"></td>
-                                    <td class="py-2 px-4 border-b border-gray-200 text-center" x-text="house.criteria.c1"></td>
-                                    <td class="py-2 px-4 border-b border-gray-200 text-center" x-text="house.criteria.c2"></td>
-                                    <td class="py-2 px-4 border-b border-gray-200 text-center" x-text="house.criteria.c3"></td>
-                                    <td class="py-2 px-4 border-b border-gray-200 text-center" x-text="house.criteria.c4"></td>
-                                    <td class="py-2 px-4 border-b border-gray-200 text-center" x-text="house.criteria.c5"></td>
+                                <tr class="hover:bg-gray-50 transition duration-150">
+                                    <td class="py-3 px-4 border-b font-medium" x-text="house.name"></td>
+                                    <td class="py-3 px-4 border-b text-center" x-text="house.criteria.c1"></td>
+                                    <td class="py-3 px-4 border-b text-center" x-text="house.criteria.c2"></td>
+                                    <td class="py-3 px-4 border-b text-center" x-text="house.criteria.c3"></td>
+                                    <td class="py-3 px-4 border-b text-center" x-text="house.criteria.c4"></td>
+                                    <td class="py-3 px-4 border-b text-center" x-text="house.criteria.c5"></td>
                                 </tr>
                             </template>
                         </tbody>
@@ -244,29 +558,41 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                <h2 class="text-xl font-semibold mb-4">Matriks Ternormalisasi</h2>
+            <div class="glass-card p-6 mb-6">
+                <h2 class="text-xl font-bold mb-5 text-gray-800 flex items-center">
+                    <i class="fas fa-calculator text-indigo-600 mr-2"></i> Matriks Ternormalisasi
+                </h2>
                 <div class="overflow-x-auto">
-                    <table class="min-w-full bg-white mb-4">
+                    <table class="min-w-full bg-white mb-4 rounded-lg overflow-hidden shadow">
                         <thead>
-                            <tr>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">Alternatif</th>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C1 (Benefit)</th>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C2 (Cost)</th>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C3 (Benefit)</th>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C4 (Benefit)</th>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C5 (Cost)</th>
+                            <tr class="gradient-bg text-white">
+                                <th class="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider">Alternatif</th>
+                                <th class="py-3 px-4 text-center text-xs font-semibold uppercase tracking-wider">
+                                    C1 <span class="ml-1 px-1.5 py-0.5 bg-green-400 bg-opacity-30 text-white rounded-md">Benefit</span>
+                                </th>
+                                <th class="py-3 px-4 text-center text-xs font-semibold uppercase tracking-wider">
+                                    C2 <span class="ml-1 px-1.5 py-0.5 bg-red-400 bg-opacity-30 text-white rounded-md">Cost</span>
+                                </th>
+                                <th class="py-3 px-4 text-center text-xs font-semibold uppercase tracking-wider">
+                                    C3 <span class="ml-1 px-1.5 py-0.5 bg-green-400 bg-opacity-30 text-white rounded-md">Benefit</span>
+                                </th>
+                                <th class="py-3 px-4 text-center text-xs font-semibold uppercase tracking-wider">
+                                    C4 <span class="ml-1 px-1.5 py-0.5 bg-green-400 bg-opacity-30 text-white rounded-md">Benefit</span>
+                                </th>
+                                <th class="py-3 px-4 text-center text-xs font-semibold uppercase tracking-wider">
+                                    C5 <span class="ml-1 px-1.5 py-0.5 bg-red-400 bg-opacity-30 text-white rounded-md">Cost</span>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             <template x-for="(house, index) in normalizedData" :key="index">
-                                <tr>
-                                    <td class="py-2 px-4 border-b border-gray-200" x-text="house.name"></td>
-                                    <td class="py-2 px-4 border-b border-gray-200 text-center" x-text="house.normalized.c1.toFixed(4)"></td>
-                                    <td class="py-2 px-4 border-b border-gray-200 text-center" x-text="house.normalized.c2.toFixed(4)"></td>
-                                    <td class="py-2 px-4 border-b border-gray-200 text-center" x-text="house.normalized.c3.toFixed(4)"></td>
-                                    <td class="py-2 px-4 border-b border-gray-200 text-center" x-text="house.normalized.c4.toFixed(4)"></td>
-                                    <td class="py-2 px-4 border-b border-gray-200 text-center" x-text="house.normalized.c5.toFixed(4)"></td>
+                                <tr class="hover:bg-gray-50 transition duration-150">
+                                    <td class="py-3 px-4 border-b font-medium" x-text="house.name"></td>
+                                    <td class="py-3 px-4 border-b text-center" x-text="house.normalized.c1.toFixed(4)"></td>
+                                    <td class="py-3 px-4 border-b text-center" x-text="house.normalized.c2.toFixed(4)"></td>
+                                    <td class="py-3 px-4 border-b text-center" x-text="house.normalized.c3.toFixed(4)"></td>
+                                    <td class="py-3 px-4 border-b text-center" x-text="house.normalized.c4.toFixed(4)"></td>
+                                    <td class="py-3 px-4 border-b text-center" x-text="house.normalized.c5.toFixed(4)"></td>
                                 </tr>
                             </template>
                         </tbody>
@@ -274,78 +600,93 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                <h2 class="text-xl font-semibold mb-4">Perhitungan Nilai Preferensi</h2>
+            <div class="glass-card p-6 mb-6">
+                <h2 class="text-xl font-bold mb-5 text-gray-800 flex items-center">
+                    <i class="fas fa-chart-line text-indigo-600 mr-2"></i> Perhitungan Nilai Preferensi
+                </h2>
                 <div class="overflow-x-auto">
-                    <table class="min-w-full bg-white mb-4">
+                    <table class="min-w-full bg-white mb-4 rounded-lg overflow-hidden shadow">
                         <thead>
-                            <tr>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">Alternatif</th>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C1 × 5</th>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C2 × 4</th>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C3 × 3</th>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C4 × 2</th>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">C5 × 1</th>
-                                <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">Total</th>
+                            <tr class="gradient-bg text-white">
+                                <th class="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider">Alternatif</th>
+                                <th class="py-3 px-4 text-center text-xs font-semibold uppercase tracking-wider">C1 × 5</th>
+                                <th class="py-3 px-4 text-center text-xs font-semibold uppercase tracking-wider">C2 × 4</th>
+                                <th class="py-3 px-4 text-center text-xs font-semibold uppercase tracking-wider">C3 × 3</th>
+                                <th class="py-3 px-4 text-center text-xs font-semibold uppercase tracking-wider">C4 × 2</th>
+                                <th class="py-3 px-4 text-center text-xs font-semibold uppercase tracking-wider">C5 × 1</th>
+                                <th class="py-3 px-4 text-center text-xs font-semibold uppercase tracking-wider">Total</th>
                             </tr>
                         </thead>
                         <tbody>
                             <template x-for="(house, index) in finalResults" :key="index">
-                                <tr>
-                                    <td class="py-2 px-4 border-b border-gray-200" x-text="house.name"></td>
-                                    <td class="py-2 px-4 border-b border-gray-200 text-center" x-text="(house.weightedValues.c1).toFixed(4)"></td>
-                                    <td class="py-2 px-4 border-b border-gray-200 text-center" x-text="(house.weightedValues.c2).toFixed(4)"></td>
-                                    <td class="py-2 px-4 border-b border-gray-200 text-center" x-text="(house.weightedValues.c3).toFixed(4)"></td>
-                                    <td class="py-2 px-4 border-b border-gray-200 text-center" x-text="(house.weightedValues.c4).toFixed(4)"></td>
-                                    <td class="py-2 px-4 border-b border-gray-200 text-center" x-text="(house.weightedValues.c5).toFixed(4)"></td>
-                                    <td class="py-2 px-4 border-b border-gray-200 text-center font-bold" x-text="house.totalScore.toFixed(4)"></td>
+                                <tr class="hover:bg-gray-50 transition duration-150">
+                                    <td class="py-3 px-4 border-b font-medium" x-text="house.name"></td>
+                                    <td class="py-3 px-4 border-b text-center" x-text="(house.weightedValues.c1).toFixed(4)"></td>
+                                    <td class="py-3 px-4 border-b text-center" x-text="(house.weightedValues.c2).toFixed(4)"></td>
+                                    <td class="py-3 px-4 border-b text-center" x-text="(house.weightedValues.c3).toFixed(4)"></td>
+                                    <td class="py-3 px-4 border-b text-center" x-text="(house.weightedValues.c4).toFixed(4)"></td>
+                                    <td class="py-3 px-4 border-b text-center" x-text="(house.weightedValues.c5).toFixed(4)"></td>
+                                    <td class="py-3 px-4 border-b text-center font-bold" x-text="house.totalScore.toFixed(4)"></td>
                                 </tr>
                             </template>
                         </tbody>
                     </table>
                 </div>
                 
-                <div class="mt-4 text-right">
+                <div class="mt-5 text-right">
                     <button @click="activeTab = 'result'" 
-                            class="bg-blue-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                        Lihat Hasil Akhir
+                            class="btn-primary text-white font-medium py-2 px-5 rounded-full focus:outline-none focus:shadow-outline shadow-lg flex items-center ml-auto">
+                        <i class="fas fa-trophy mr-2"></i> Lihat Hasil Akhir
                     </button>
                 </div>
             </div>
         </div>
 
         <!-- Result Tab -->
-        <div x-show="activeTab === 'result'" x-cloak>
+        <div x-show="activeTab === 'result'" x-cloak class="animate__animated animate__fadeIn">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <!-- Final Ranking -->
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-semibold">Hasil Akhir Perangkingan</h2>
+                <div class="glass-card p-6">
+                    <div class="flex justify-between items-center mb-5">
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                            <i class="fas fa-trophy text-indigo-600 mr-2"></i> Hasil Akhir Perangkingan
+                        </h2>
                         <div>
-                            <button @click="exportToPDF()" class="bg-red-600 hover:bg-red-500 text-white py-1 px-3 rounded text-sm">
-                                Export PDF
-                            </button>
-                            <button @click="exportToExcel()" class="bg-green-600 hover:bg-green-500 text-white py-1 px-3 rounded text-sm ml-2">
-                                Export Excel
-                            </button>
+                            <div class="flex flex-wrap gap-3">
+                                <button @click="exportToPDF()" class="export-btn pdf-gradient text-white py-2.5 px-4 rounded-lg text-sm font-semibold shadow-lg flex items-center">
+                                    <i class="fas fa-file-pdf mr-2 btn-icon"></i> Export PDF
+                                </button>
+                                <button @click="exportToExcel()" class="export-btn excel-gradient text-white py-2.5 px-4 rounded-lg text-sm font-semibold shadow-lg flex items-center">
+                                    <i class="fas fa-file-excel mr-2 btn-icon"></i> Export Excel
+                                </button>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto rounded-lg shadow">
                         <table class="min-w-full bg-white" id="resultTable">
                             <thead>
-                                <tr>
-                                    <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">Ranking</th>
-                                    <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">Nama Kos</th>
-                                    <th class="py-2 px-4 border-b border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">Score</th>
+                                <tr class="gradient-bg text-white">
+                                    <th class="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider">Ranking</th>
+                                    <th class="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider">Nama Kos</th>
+                                    <th class="py-3 px-4 text-center text-xs font-semibold uppercase tracking-wider">Score</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <template x-for="(house, index) in finalRanking" :key="index">
-                                    <tr :class="{'bg-blue-100': index === 0}">
-                                        <td class="py-3 px-4 border-b border-gray-200" x-text="index + 1"></td>
-                                        <td class="py-3 px-4 border-b border-gray-200 font-medium" x-text="house.name"></td>
-                                        <td class="py-3 px-4 border-b border-gray-200 text-center font-bold" x-text="house.totalScore.toFixed(4)"></td>
+                                    <tr :class="{'bg-indigo-50 hover-card': index === 0, 'hover:bg-gray-50 transition duration-150': index !== 0}">
+                                        <td class="py-3 px-4 border-b">
+                                            <span x-show="index === 0" class="inline-flex items-center justify-center w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full text-white font-bold">1</span>
+                                            <span x-show="index === 1" class="inline-flex items-center justify-center w-6 h-6 bg-gradient-to-r from-gray-300 to-gray-400 rounded-full text-white font-bold">2</span>
+                                            <span x-show="index === 2" class="inline-flex items-center justify-center w-6 h-6 bg-gradient-to-r from-yellow-700 to-orange-800 rounded-full text-white font-bold">3</span>
+                                            <span x-show="index > 2" class="inline-flex items-center justify-center w-6 h-6 bg-gray-200 rounded-full text-gray-700 font-bold" x-text="index + 1"></span>
+                                        </td>
+                                        <td class="py-3 px-4 border-b font-medium" x-text="house.name"></td>
+                                        <td class="py-3 px-4 border-b text-center">
+                                            <span class="inline-flex items-center justify-center px-3 py-1 rounded-full" :class="{'bg-indigo-100 text-indigo-800': index === 0, 'bg-gray-100 text-gray-800': index !== 0}">
+                                                <span x-text="house.totalScore.toFixed(4)" class="font-bold"></span>
+                                            </span>
+                                        </td>
                                     </tr>
                                 </template>
                             </tbody>
@@ -354,113 +695,142 @@
                 </div>
 
                 <!-- Chart Visualization -->
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h2 class="text-xl font-semibold mb-4">Visualisasi Hasil</h2>
-                    <canvas id="resultChart" width="400" height="300"></canvas>
+                <div class="glass-card p-6">
+                    <h2 class="text-xl font-bold mb-5 text-gray-800 flex items-center">
+                        <i class="fas fa-chart-bar text-indigo-600 mr-2"></i> Visualisasi Hasil
+                    </h2>
+                    <canvas id="resultChart" width="400" height="300" class="rounded-lg shadow"></canvas>
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                <h2 class="text-xl font-semibold mb-4">Perbandingan Kriteria</h2>
-                <canvas id="criteriaChart" width="400" height="200"></canvas>
-            </div>
-
-            <div class="text-center p-4">
-                <a href="#" @click.prevent="activeTab = 'input'" class="text-blue-600 hover:underline font-medium">
-                    Kembali ke Input Data
+            <div class="text-center p-6">
+                <a href="#" @click.prevent="activeTab = 'input'" class="btn-primary text-white font-medium py-2 px-6 rounded-full focus:outline-none focus:shadow-outline shadow-lg inline-flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Kembali ke Input Data
                 </a>
             </div>
         </div>
 
         <!-- About Tab -->
-        <div x-show="activeTab === 'about'" x-cloak>
-            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                <h2 class="text-xl font-semibold mb-4">Tentang Metode SAW</h2>
+        <div x-show="activeTab === 'about'" x-cloak class="animate__animated animate__fadeIn">
+            <div class="glass-card p-6 mb-6">
+                <h2 class="text-xl font-bold mb-5 text-gray-800 flex items-center">
+                    <i class="fas fa-info-circle text-indigo-600 mr-2"></i> Tentang Metode SAW
+                </h2>
                 <div class="prose max-w-none">
-                    <p>Metode Simple Additive Weighting (SAW) adalah salah satu metode dalam Sistem Pendukung Keputusan (SPK) yang digunakan untuk menentukan alternatif terbaik dari beberapa alternatif berdasarkan kriteria tertentu.</p>
+                    <p class="text-gray-700">Metode <span class="font-semibold text-indigo-600">Simple Additive Weighting (SAW)</span> adalah salah satu metode dalam Sistem Pendukung Keputusan (SPK) yang digunakan untuk menentukan alternatif terbaik dari beberapa alternatif berdasarkan kriteria tertentu.</p>
                     
-                    <h3 class="font-bold mt-4">Langkah-langkah Metode SAW:</h3>
-                    <ol class="list-decimal list-inside">
-                        <li class="mb-2">
-                            <span class="font-semibold">Menentukan kriteria</span> yang akan digunakan sebagai acuan pengambilan keputusan.
+                    <h3 class="font-bold mt-6 text-gray-800 text-lg">Langkah-langkah Metode SAW:</h3>
+                    <ol class="list-decimal list-inside space-y-3 mt-4">
+                        <li class="bg-indigo-50 p-3 rounded-lg shadow-sm">
+                            <span class="font-semibold text-indigo-700">Menentukan kriteria</span> yang akan digunakan sebagai acuan pengambilan keputusan.
                         </li>
-                        <li class="mb-2">
-                            <span class="font-semibold">Menentukan bobot</span> untuk masing-masing kriteria.
+                        <li class="bg-indigo-50 p-3 rounded-lg shadow-sm">
+                            <span class="font-semibold text-indigo-700">Menentukan bobot</span> untuk masing-masing kriteria.
                         </li>
-                        <li class="mb-2">
-                            <span class="font-semibold">Membuat matriks keputusan</span> berdasarkan kriteria.
+                        <li class="bg-indigo-50 p-3 rounded-lg shadow-sm">
+                            <span class="font-semibold text-indigo-700">Membuat matriks keputusan</span> berdasarkan kriteria.
                         </li>
-                        <li class="mb-2">
-                            <span class="font-semibold">Melakukan normalisasi matriks</span> berdasarkan jenis atribut (benefit atau cost).
-                            <ul class="list-disc list-inside ml-5">
-                                <li>Untuk atribut benefit: <code>r<sub>ij</sub> = x<sub>ij</sub> / max(x<sub>ij</sub>)</code></li>
-                                <li>Untuk atribut cost: <code>r<sub>ij</sub> = min(x<sub>ij</sub>) / x<sub>ij</sub></code></li>
+                        <li class="bg-indigo-50 p-3 rounded-lg shadow-sm">
+                            <span class="font-semibold text-indigo-700">Melakukan normalisasi matriks</span> berdasarkan jenis atribut (benefit atau cost).
+                            <ul class="list-disc list-inside ml-5 mt-2">
+                                <li>Untuk atribut benefit: <code class="bg-white px-2 py-1 rounded text-indigo-600">r<sub>ij</sub> = x<sub>ij</sub> / max(x<sub>ij</sub>)</code></li>
+                                <li>Untuk atribut cost: <code class="bg-white px-2 py-1 rounded text-indigo-600">r<sub>ij</sub> = min(x<sub>ij</sub>) / x<sub>ij</sub></code></li>
                             </ul>
                         </li>
-                        <li class="mb-2">
-                            <span class="font-semibold">Menghitung nilai preferensi</span> untuk setiap alternatif dengan mengalikan nilai ternormalisasi dengan bobot kriteria kemudian menjumlahkannya.
+                        <li class="bg-indigo-50 p-3 rounded-lg shadow-sm">
+                            <span class="font-semibold text-indigo-700">Menghitung nilai preferensi</span> untuk setiap alternatif dengan mengalikan nilai ternormalisasi dengan bobot kriteria kemudian menjumlahkannya.
                         </li>
-                        <li class="mb-2">
-                            <span class="font-semibold">Mengurutkan alternatif</span> berdasarkan nilai preferensi dari tertinggi ke terendah untuk mendapatkan alternatif terbaik.
+                        <li class="bg-indigo-50 p-3 rounded-lg shadow-sm">
+                            <span class="font-semibold text-indigo-700">Mengurutkan alternatif</span> berdasarkan nilai preferensi dari tertinggi ke terendah untuk mendapatkan alternatif terbaik.
                         </li>
                     </ol>
                     
-                    <h3 class="font-bold mt-4">Kriteria dan Bobot yang Digunakan:</h3>
-                    <table class="min-w-full bg-white border mt-2">
-                        <thead>
-                            <tr>
-                                <th class="py-2 px-4 border text-left">Kriteria</th>
-                                <th class="py-2 px-4 border text-center">Bobot</th>
-                                <th class="py-2 px-4 border text-center">Jenis</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="py-2 px-4 border">Fasilitas (C1)</td>
-                                <td class="py-2 px-4 border text-center">5</td>
-                                <td class="py-2 px-4 border text-center">Benefit</td>
-                            </tr>
-                            <tr>
-                                <td class="py-2 px-4 border">Harga Sewa (C2)</td>
-                                <td class="py-2 px-4 border text-center">4</td>
-                                <td class="py-2 px-4 border text-center">Cost</td>
-                            </tr>
-                            <tr>
-                                <td class="py-2 px-4 border">Keamanan (C3)</td>
-                                <td class="py-2 px-4 border text-center">3</td>
-                                <td class="py-2 px-4 border text-center">Benefit</td>
-                            </tr>
-                            <tr>
-                                <td class="py-2 px-4 border">Kebersihan (C4)</td>
-                                <td class="py-2 px-4 border text-center">2</td>
-                                <td class="py-2 px-4 border text-center">Benefit</td>
-                            </tr>
-                            <tr>
-                                <td class="py-2 px-4 border">Jarak ke Kampus (C5)</td>
-                                <td class="py-2 px-4 border text-center">1</td>
-                                <td class="py-2 px-4 border text-center">Cost</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <h3 class="font-bold mt-6 text-gray-800 text-lg">Kriteria dan Bobot yang Digunakan:</h3>
+                    <div class="overflow-x-auto mt-4">
+                        <table class="min-w-full bg-white border rounded-lg overflow-hidden shadow">
+                            <thead>
+                                <tr class="gradient-bg text-white">
+                                    <th class="py-3 px-4 text-left">Kriteria</th>
+                                    <th class="py-3 px-4 text-center">Bobot</th>
+                                    <th class="py-3 px-4 text-center">Jenis</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-3 px-4 border-b font-medium">Fasilitas (C1)</td>
+                                    <td class="py-3 px-4 border-b text-center">
+                                        <span class="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full font-bold">5</span>
+                                    </td>
+                                    <td class="py-3 px-4 border-b text-center">
+                                        <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full">Benefit</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-3 px-4 border-b font-medium">Harga Sewa (C2)</td>
+                                    <td class="py-3 px-4 border-b text-center">
+                                        <span class="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full font-bold">4</span>
+                                    </td>
+                                    <td class="py-3 px-4 border-b text-center">
+                                        <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full">Cost</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-3 px-4 border-b font-medium">Keamanan (C3)</td>
+                                    <td class="py-3 px-4 border-b text-center">
+                                        <span class="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full font-bold">3</span>
+                                    </td>
+                                    <td class="py-3 px-4 border-b text-center">
+                                        <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full">Benefit</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-3 px-4 border-b font-medium">Kebersihan (C4)</td>
+                                    <td class="py-3 px-4 border-b text-center">
+                                        <span class="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full font-bold">2</span>
+                                    </td>
+                                    <td class="py-3 px-4 border-b text-center">
+                                        <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full">Benefit</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-3 px-4 border-b font-medium">Jarak ke Kampus (C5)</td>
+                                    <td class="py-3 px-4 border-b text-center">
+                                        <span class="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full font-bold">1</span>
+                                    </td>
+                                    <td class="py-3 px-4 border-b text-center">
+                                        <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full">Cost</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     
-                    <p class="mt-4">
-                        <strong>Catatan:</strong> Untuk kriteria jenis benefit, semakin tinggi nilainya semakin baik. Untuk kriteria jenis cost, semakin rendah nilainya semakin baik.
-                    </p>
+                    <div class="mt-6 p-4 border border-indigo-200 rounded-lg bg-indigo-50">
+                        <p class="flex items-start">
+                            <i class="fas fa-info-circle text-indigo-600 mt-1 mr-2"></i>
+                            <span>
+                                <strong>Catatan:</strong> Untuk kriteria jenis <span class="text-green-600 font-medium">benefit</span>, semakin tinggi nilainya semakin baik. Untuk kriteria jenis <span class="text-red-600 font-medium">cost</span>, semakin rendah nilainya semakin baik.
+                            </span>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-blue-800 text-white py-4 mt-8">
+    <footer class="gradient-bg text-white py-4 mt-8 shadow-lg">
         <div class="container mx-auto px-4 text-center">
             <p>Sistem Pendukung Keputusan Pemilihan Kos Terbaik di Sekitar Kampus</p>
-            <p class="text-blue-200 text-sm mt-1">© 2025 - Metode Simple Additive Weighting (SAW)</p>
+            <div class="text-indigo-200 text-sm mt-2 flex justify-center items-center">
+                <i class="fas fa-code mr-1"></i> © 2025 - Metode Simple Additive Weighting (SAW)
+            </div>
         </div>
     </footer>
 
     <!-- Script -->
     <script>
+        // ...existing code...
         function spkApp() {
             return {
                 activeTab: 'input',
@@ -628,7 +998,7 @@
                         this.resultChart.destroy();
                     }
                     
-                    // Create new chart
+                    // Create new chart with improved styling
                     this.resultChart = new Chart(ctx, {
                         type: 'bar',
                         data: {
@@ -637,27 +1007,38 @@
                                 label: 'Skor Akhir',
                                 data: this.finalRanking.map(house => house.totalScore),
                                 backgroundColor: [
-                                    'rgba(30, 64, 175, 0.8)',
-                                    'rgba(37, 99, 235, 0.7)',
-                                    'rgba(59, 130, 246, 0.6)',
-                                    'rgba(96, 165, 250, 0.5)',
-                                    'rgba(147, 197, 253, 0.4)'
+                                    'rgba(99, 102, 241, 0.8)',
+                                    'rgba(129, 140, 248, 0.7)',
+                                    'rgba(165, 180, 252, 0.6)',
+                                    'rgba(196, 181, 253, 0.5)',
+                                    'rgba(216, 180, 254, 0.4)'
                                 ],
                                 borderColor: [
-                                    'rgba(30, 64, 175, 1)',
-                                    'rgba(37, 99, 235, 1)',
-                                    'rgba(59, 130, 246, 1)',
-                                    'rgba(96, 165, 250, 1)',
-                                    'rgba(147, 197, 253, 1)'
+                                    'rgba(79, 70, 229, 1)',
+                                    'rgba(99, 102, 241, 1)',
+                                    'rgba(129, 140, 248, 1)',
+                                    'rgba(165, 180, 252, 1)',
+                                    'rgba(196, 181, 253, 1)'
                                 ],
-                                borderWidth: 1
+                                borderWidth: 2,
+                                borderRadius: 6
                             }]
                         },
                         options: {
+                            responsive: true,
                             scales: {
                                 y: {
                                     beginAtZero: true,
-                                    max: 15
+                                    max: 15,
+                                    grid: {
+                                        display: true,
+                                        color: 'rgba(0, 0, 0, 0.05)'
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        display: false
+                                    }
                                 }
                             },
                             plugins: {
@@ -666,50 +1047,16 @@
                                 },
                                 title: {
                                     display: true,
-                                    text: 'Peringkat Kos Berdasarkan Skor SAW'
-                                }
-                            }
-                        }
-                    });
-                },
-
-                // Create pie chart for criteria weights
-                createCriteriaChart() {
-                    const ctx = document.getElementById('criteriaChart');
-                    
-                    // Destroy existing chart if it exists
-                    if (this.criteriaChart) {
-                        this.criteriaChart.destroy();
-                    }
-                    
-                    // Create new chart
-                    this.criteriaChart = new Chart(ctx, {
-                        type: 'pie',
-                        data: {
-                            labels: ['Fasilitas (C1)', 'Harga Sewa (C2)', 'Keamanan (C3)', 'Kebersihan (C4)', 'Jarak ke Kampus (C5)'],
-                            datasets: [{
-                                data: [
-                                    this.weights.c1,
-                                    this.weights.c2,
-                                    this.weights.c3,
-                                    this.weights.c4,
-                                    this.weights.c5
-                                ],
-                                backgroundColor: [
-                                    'rgba(30, 64, 175, 0.8)',
-                                    'rgba(37, 99, 235, 0.7)',
-                                    'rgba(59, 130, 246, 0.6)',
-                                    'rgba(96, 165, 250, 0.5)',
-                                    'rgba(147, 197, 253, 0.4)'
-                                ],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: 'Bobot Kriteria'
+                                    text: 'Peringkat Kos Berdasarkan Skor SAW',
+                                    color: '#1F2937',
+                                    font: {
+                                        size: 16,
+                                        weight: 'bold'
+                                    },
+                                    padding: {
+                                        top: 10,
+                                        bottom: 20
+                                    }
                                 }
                             }
                         }
@@ -717,74 +1064,98 @@
                 },
 
                 // Export to PDF
-                exportToPDF() {
+                 exportToPDF() {
+                    // Using jspdf and jspdf-autotable
                     const { jsPDF } = window.jspdf;
                     const doc = new jsPDF();
+
+                    // Add title
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(18);
+                    doc.setTextColor(79, 70, 229);
+                    doc.text('Hasil Perangkingan Kos Terbaik', 105, 20, { align: 'center' });
                     
-                    doc.setFontSize(16);
-                    doc.text("Hasil SPK Pemilihan Kos Terbaik", 14, 15);
+                    // Add subtitle with date
+                    doc.setFont('helvetica', 'normal');
                     doc.setFontSize(12);
-                    doc.text("Metode: Simple Additive Weighting (SAW)", 14, 25);
+                    doc.setTextColor(100, 100, 100);
+                    doc.text(`Dihasilkan pada: ${new Date().toLocaleDateString('id-ID')}`, 105, 28, { align: 'center' });
+
+                    // Add horizontal line
+                    doc.setDrawColor(79, 70, 229);
+                    doc.setLineWidth(0.5);
+                    doc.line(20, 32, 190, 32);
                     
-                    // Create data for the table
-                    const tableData = this.finalRanking.map((house, index) => [
+                    // Table header style
+                    const tableColumn = ["Ranking", "Nama Kos", "Skor"];
+                    const tableRows = this.finalRanking.map((house, index) => [
                         index + 1,
                         house.name,
                         house.totalScore.toFixed(4)
                     ]);
-                    
-                    // Add table headers
-                    const headers = [["Ranking", "Nama Kos", "Skor"]];
-                    
-                    // Add the table
+
+                    // Create table
                     doc.autoTable({
-                        startY: 35,
-                        head: headers,
-                        body: tableData,
+                        head: [tableColumn],
+                        body: tableRows,
+                        startY: 40,
                         theme: 'grid',
                         headStyles: {
-                            fillColor: [30, 64, 175],
-                            textColor: 255
+                            fillColor: [79, 70, 229],
+                            textColor: 255,
+                            fontStyle: 'bold',
+                            halign: 'center'
+                        },
+                        columnStyles: {
+                            0: { halign: 'center', cellWidth: 25 },
+                            2: { halign: 'center', cellWidth: 35 }
+                        },
+                        alternateRowStyles: {
+                            fillColor: [245, 247, 250]
+                        },
+                        styles: {
+                            font: 'helvetica',
+                            cellPadding: 6,
+                            fontSize: 10
+                        },
+                        didDrawPage: function(data) {
+                            // Footer
+                            const pageSize = doc.internal.pageSize;
+                            const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
+                            doc.setFontSize(8);
+                            doc.setTextColor(150, 150, 150);
+                            doc.text('SPK Pemilihan Kos Terbaik - Menggunakan Metode SAW', 105, pageHeight - 10, { align: 'center' });
                         }
                     });
-                    
-                    // Add footer
-                    const pageCount = doc.internal.getNumberOfPages();
-                    for (let i = 1; i <= pageCount; i++) {
-                        doc.setPage(i);
-                        doc.setFontSize(10);
-                        doc.text(`Dicetak pada: ${new Date().toLocaleString()}`, 14, doc.internal.pageSize.height - 10);
-                    }
-                    
-                    // Save the PDF
-                    doc.save("spk-boarding-house-result.pdf");
+
+                    // Save PDF
+                    doc.save(`ranking-kos-${new Date().toISOString().slice(0,10)}.pdf`);
                 },
 
-                // Export to Excel
+                // Export to Excel (CSV)
                 exportToExcel() {
-                    // Create Excel-like CSV data
-                    let csvContent = "data:text/csv;charset=utf-8,";
+                    // Create CSV content
+                    const header = "Ranking,Nama Kos,Skor\n";
+                    const rows = this.finalRanking.map((house, index) => 
+                        `${index+1},${house.name.replace(/,/g, ' ')},${house.totalScore.toFixed(4)}`
+                    );
+                    const csvContent = header + rows.join('\n');
                     
-                    // Add headers
-                    csvContent += "Ranking,Nama Kos,Skor\n";
+                    // Create download link
+                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                    const link = document.createElement('a');
+                    const url = URL.createObjectURL(blob);
                     
-                    // Add data rows
-                    this.finalRanking.forEach((house, index) => {
-                        csvContent += `${index + 1},${house.name},${house.totalScore.toFixed(4)}\n`;
-                    });
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', `ranking-kos-${new Date().toISOString().slice(0,10)}.csv`);
+                    link.style.display = 'none';
                     
-                    // Create a download link
-                    const encodedUri = encodeURI(csvContent);
-                    const link = document.createElement("a");
-                    link.setAttribute("href", encodedUri);
-                    link.setAttribute("download", "spk-boarding-house-result.csv");
+                    // Add to document, trigger download and clean up
                     document.body.appendChild(link);
-                    
-                    // Trigger the download
                     link.click();
                     document.body.removeChild(link);
                 }
-            };
+            }
         }
     </script>
 </body>
